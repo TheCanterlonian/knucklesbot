@@ -39,6 +39,9 @@ $RECYCLE.BIN/
 .Trashes
 .VolumeIcon.icns
 /config.json
+/err.txt
+/log.txt
+/out.txt
 # Directories potentially created on remote AFP share
 .AppleDB
 .AppleDesktop
