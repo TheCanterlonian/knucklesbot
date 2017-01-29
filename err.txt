@@ -1,0 +1,191 @@
+C:\Users\Jake\Desktop\knucklesbot\node_modules\discord.js\src\client\ClientDataResolver.js:275
+            if (!stats || !stats.isFile()) throw new Error(`The file could not be found: ${file}`);
+                                           ^
+
+Error: The file could not be found: C:\Users\Jake\Desktop\knuckles.jpg
+    at fs.stat (C:\Users\Jake\Desktop\knucklesbot\node_modules\discord.js\src\client\ClientDataResolver.js:275:50)
+    at FSReqWrap.oncomplete (fs.js:112:15)
+C:\Users\Jake\Desktop\knucklesbot\node_modules\discord.js\src\client\ClientDataResolver.js:275
+            if (!stats || !stats.isFile()) throw new Error(`The file could not be found: ${file}`);
+                                           ^
+
+Error: The file could not be found: C:\Users\Jake\Desktop\Knuckles_the_Echidna_(Sonic_Boom)_Archie_Comics.png
+    at fs.stat (C:\Users\Jake\Desktop\knucklesbot\node_modules\discord.js\src\client\ClientDataResolver.js:275:50)
+    at FSReqWrap.oncomplete (fs.js:112:15)
+C:\Users\Jake\Desktop\knucklesbot\node_modules\discord.js\src\client\ClientDataResolver.js:275
+            if (!stats || !stats.isFile()) throw new Error(`The file could not be found: ${file}`);
+                                           ^
+
+Error: The file could not be found: C:\Users\Jake\Desktop\0022967b120ec244c8633c9f1b449eee.jpg
+    at fs.stat (C:\Users\Jake\Desktop\knucklesbot\node_modules\discord.js\src\client\ClientDataResolver.js:275:50)
+    at FSReqWrap.oncomplete (fs.js:112:15)
+C:\Users\Jake\Desktop\knucklesbot\node_modules\discord.js\src\client\ClientDataResolver.js:275
+            if (!stats || !stats.isFile()) throw new Error(`The file could not be found: ${file}`);
+                                           ^
+
+Error: The file could not be found: C:\Users\Jake\Desktop\knuck.jpg
+    at fs.stat (C:\Users\Jake\Desktop\knucklesbot\node_modules\discord.js\src\client\ClientDataResolver.js:275:50)
+    at FSReqWrap.oncomplete (fs.js:112:15)
+C:\Users\Jake\Desktop\knucklesbot\node_modules\discord.js\src\client\ClientDataResolver.js:275
+            if (!stats || !stats.isFile()) throw new Error(`The file could not be found: ${file}`);
+                                           ^
+
+Error: The file could not be found: C:\Users\Jake\Desktop\knuckles_the_echidna_by_kaylethpop.png
+    at fs.stat (C:\Users\Jake\Desktop\knucklesbot\node_modules\discord.js\src\client\ClientDataResolver.js:275:50)
+    at FSReqWrap.oncomplete (fs.js:112:15)
+C:\Users\Jake\Desktop\knucklesbot\node_modules\discord.js\src\client\ClientDataResolver.js:275
+            if (!stats || !stats.isFile()) throw new Error(`The file could not be found: ${file}`);
+                                           ^
+
+Error: The file could not be found: C:\Users\Jake\Desktop\blush.jpg
+    at fs.stat (C:\Users\Jake\Desktop\knucklesbot\node_modules\discord.js\src\client\ClientDataResolver.js:275:50)
+    at FSReqWrap.oncomplete (fs.js:112:15)
+C:\Users\Jake\Desktop\knucklesbot\node_modules\discord.js\src\client\ClientDataResolver.js:275
+            if (!stats || !stats.isFile()) throw new Error(`The file could not be found: ${file}`);
+                                           ^
+
+Error: The file could not be found: C:\Users\Jake\Desktop\blush.jpg
+    at fs.stat (C:\Users\Jake\Desktop\knucklesbot\node_modules\discord.js\src\client\ClientDataResolver.js:275:50)
+    at FSReqWrap.oncomplete (fs.js:112:15)
+C:\Users\Jake\Desktop\knucklesbot\node_modules\discord.js\src\client\ClientDataResolver.js:275
+            if (!stats || !stats.isFile()) throw new Error(`The file could not be found: ${file}`);
+                                           ^
+
+Error: The file could not be found: C:\Users\Jake\Desktop\blush.jpg
+    at fs.stat (C:\Users\Jake\Desktop\knucklesbot\node_modules\discord.js\src\client\ClientDataResolver.js:275:50)
+    at FSReqWrap.oncomplete (fs.js:112:15)
+C:\Users\Jake\Desktop\knucklesbot\bot.js:37
+				for (var i = array.length - 1; i >= 0; i--) {
+				             ^
+
+ReferenceError: array is not defined
+    at Client.bot.on.msg (C:\Users\Jake\Desktop\knucklesbot\bot.js:37:18)
+    at emitOne (events.js:96:13)
+    at Client.emit (events.js:188:7)
+    at MessageCreateHandler.handle (C:\Users\Jake\Desktop\knucklesbot\node_modules\discord.js\src\client\websocket\packets\handlers\MessageCreate.js:9:34)
+    at WebSocketPacketManager.handle (C:\Users\Jake\Desktop\knucklesbot\node_modules\discord.js\src\client\websocket\packets\WebSocketPacketManager.js:120:65)
+    at WebSocketManager.eventMessage (C:\Users\Jake\Desktop\knucklesbot\node_modules\discord.js\src\client\websocket\WebSocketManager.js:273:31)
+    at WebSocket.onMessage (C:\Users\Jake\Desktop\knucklesbot\node_modules\ws\lib\WebSocket.js:442:14)
+    at emitTwo (events.js:106:13)
+    at WebSocket.emit (events.js:191:7)
+    at Receiver.ontext (C:\Users\Jake\Desktop\knucklesbot\node_modules\ws\lib\WebSocket.js:841:10)
+C:\Users\Jake\Desktop\knucklesbot\bot.js:36
+				msg.reply(`you got lucky,  ${ment.username}`);
+				                                 ^
+
+TypeError: Cannot read property 'username' of undefined
+    at Client.bot.on.msg (C:\Users\Jake\Desktop\knucklesbot\bot.js:36:38)
+    at emitOne (events.js:96:13)
+    at Client.emit (events.js:188:7)
+    at MessageCreateHandler.handle (C:\Users\Jake\Desktop\knucklesbot\node_modules\discord.js\src\client\websocket\packets\handlers\MessageCreate.js:9:34)
+    at WebSocketPacketManager.handle (C:\Users\Jake\Desktop\knucklesbot\node_modules\discord.js\src\client\websocket\packets\WebSocketPacketManager.js:120:65)
+    at WebSocketManager.eventMessage (C:\Users\Jake\Desktop\knucklesbot\node_modules\discord.js\src\client\websocket\WebSocketManager.js:273:31)
+    at WebSocket.onMessage (C:\Users\Jake\Desktop\knucklesbot\node_modules\ws\lib\WebSocket.js:442:14)
+    at emitTwo (events.js:106:13)
+    at WebSocket.emit (events.js:191:7)
+    at Receiver.ontext (C:\Users\Jake\Desktop\knucklesbot\node_modules\ws\lib\WebSocket.js:841:10)
+C:\Users\Jake\Desktop\knucklesbot\bot.js:37
+				for (var i = array.length - 1; i >= 0; i--) {
+				             ^
+
+ReferenceError: array is not defined
+    at Client.bot.on.msg (C:\Users\Jake\Desktop\knucklesbot\bot.js:37:18)
+    at emitOne (events.js:96:13)
+    at Client.emit (events.js:188:7)
+    at MessageCreateHandler.handle (C:\Users\Jake\Desktop\knucklesbot\node_modules\discord.js\src\client\websocket\packets\handlers\MessageCreate.js:9:34)
+    at WebSocketPacketManager.handle (C:\Users\Jake\Desktop\knucklesbot\node_modules\discord.js\src\client\websocket\packets\WebSocketPacketManager.js:120:65)
+    at WebSocketManager.eventMessage (C:\Users\Jake\Desktop\knucklesbot\node_modules\discord.js\src\client\websocket\WebSocketManager.js:273:31)
+    at WebSocket.onMessage (C:\Users\Jake\Desktop\knucklesbot\node_modules\ws\lib\WebSocket.js:442:14)
+    at emitTwo (events.js:106:13)
+    at WebSocket.emit (events.js:191:7)
+    at Receiver.ontext (C:\Users\Jake\Desktop\knucklesbot\node_modules\ws\lib\WebSocket.js:841:10)
+C:\Users\Jake\Desktop\knucklesbot\bot.js:37
+				for (var i = array.length - 1; i >= 0; i--) {
+				             ^
+
+ReferenceError: array is not defined
+    at Client.bot.on.msg (C:\Users\Jake\Desktop\knucklesbot\bot.js:37:18)
+    at emitOne (events.js:96:13)
+    at Client.emit (events.js:188:7)
+    at MessageCreateHandler.handle (C:\Users\Jake\Desktop\knucklesbot\node_modules\discord.js\src\client\websocket\packets\handlers\MessageCreate.js:9:34)
+    at WebSocketPacketManager.handle (C:\Users\Jake\Desktop\knucklesbot\node_modules\discord.js\src\client\websocket\packets\WebSocketPacketManager.js:120:65)
+    at WebSocketManager.eventMessage (C:\Users\Jake\Desktop\knucklesbot\node_modules\discord.js\src\client\websocket\WebSocketManager.js:273:31)
+    at WebSocket.onMessage (C:\Users\Jake\Desktop\knucklesbot\node_modules\ws\lib\WebSocket.js:442:14)
+    at emitTwo (events.js:106:13)
+    at WebSocket.emit (events.js:191:7)
+    at Receiver.ontext (C:\Users\Jake\Desktop\knucklesbot\node_modules\ws\lib\WebSocket.js:841:10)
+C:\Users\Jake\Desktop\knucklesbot\bot.js:37
+				for (var i = array.length - 1; i >= 0; i--) {
+				             ^
+
+ReferenceError: array is not defined
+    at Client.bot.on.msg (C:\Users\Jake\Desktop\knucklesbot\bot.js:37:18)
+    at emitOne (events.js:96:13)
+    at Client.emit (events.js:188:7)
+    at MessageCreateHandler.handle (C:\Users\Jake\Desktop\knucklesbot\node_modules\discord.js\src\client\websocket\packets\handlers\MessageCreate.js:9:34)
+    at WebSocketPacketManager.handle (C:\Users\Jake\Desktop\knucklesbot\node_modules\discord.js\src\client\websocket\packets\WebSocketPacketManager.js:120:65)
+    at WebSocketManager.eventMessage (C:\Users\Jake\Desktop\knucklesbot\node_modules\discord.js\src\client\websocket\WebSocketManager.js:273:31)
+    at WebSocket.onMessage (C:\Users\Jake\Desktop\knucklesbot\node_modules\ws\lib\WebSocket.js:442:14)
+    at emitTwo (events.js:106:13)
+    at WebSocket.emit (events.js:191:7)
+    at Receiver.ontext (C:\Users\Jake\Desktop\knucklesbot\node_modules\ws\lib\WebSocket.js:841:10)
+C:\Users\Jake\Desktop\knucklesbot\bot.js:36
+				msg.reply(`you got lucky,  ${ment.username}`).catch(errorLogger);
+				                                                    ^
+
+ReferenceError: errorLogger is not defined
+    at Client.bot.on.msg (C:\Users\Jake\Desktop\knucklesbot\bot.js:36:57)
+    at emitOne (events.js:96:13)
+    at Client.emit (events.js:188:7)
+    at MessageCreateHandler.handle (C:\Users\Jake\Desktop\knucklesbot\node_modules\discord.js\src\client\websocket\packets\handlers\MessageCreate.js:9:34)
+    at WebSocketPacketManager.handle (C:\Users\Jake\Desktop\knucklesbot\node_modules\discord.js\src\client\websocket\packets\WebSocketPacketManager.js:120:65)
+    at WebSocketManager.eventMessage (C:\Users\Jake\Desktop\knucklesbot\node_modules\discord.js\src\client\websocket\WebSocketManager.js:273:31)
+    at WebSocket.onMessage (C:\Users\Jake\Desktop\knucklesbot\node_modules\ws\lib\WebSocket.js:442:14)
+    at emitTwo (events.js:106:13)
+    at WebSocket.emit (events.js:191:7)
+    at Receiver.ontext (C:\Users\Jake\Desktop\knucklesbot\node_modules\ws\lib\WebSocket.js:841:10)
+C:\Users\Jake\Desktop\knucklesbot\bot.js:36
+				msg.reply(`you got lucky,  ${ment.username}`).catch(errorLogger);
+				                                                    ^
+
+ReferenceError: errorLogger is not defined
+    at Client.bot.on.msg (C:\Users\Jake\Desktop\knucklesbot\bot.js:36:57)
+    at emitOne (events.js:96:13)
+    at Client.emit (events.js:188:7)
+    at MessageCreateHandler.handle (C:\Users\Jake\Desktop\knucklesbot\node_modules\discord.js\src\client\websocket\packets\handlers\MessageCreate.js:9:34)
+    at WebSocketPacketManager.handle (C:\Users\Jake\Desktop\knucklesbot\node_modules\discord.js\src\client\websocket\packets\WebSocketPacketManager.js:120:65)
+    at WebSocketManager.eventMessage (C:\Users\Jake\Desktop\knucklesbot\node_modules\discord.js\src\client\websocket\WebSocketManager.js:273:31)
+    at WebSocket.onMessage (C:\Users\Jake\Desktop\knucklesbot\node_modules\ws\lib\WebSocket.js:442:14)
+    at emitTwo (events.js:106:13)
+    at WebSocket.emit (events.js:191:7)
+    at Receiver.ontext (C:\Users\Jake\Desktop\knucklesbot\node_modules\ws\lib\WebSocket.js:841:10)
+C:\Users\Jake\Desktop\knucklesbot\bot.js:37
+				for (var i = array.length - 1; i >= 0; i--) {
+				             ^
+
+ReferenceError: array is not defined
+    at Client.bot.on.msg (C:\Users\Jake\Desktop\knucklesbot\bot.js:37:18)
+    at emitOne (events.js:96:13)
+    at Client.emit (events.js:188:7)
+    at MessageCreateHandler.handle (C:\Users\Jake\Desktop\knucklesbot\node_modules\discord.js\src\client\websocket\packets\handlers\MessageCreate.js:9:34)
+    at WebSocketPacketManager.handle (C:\Users\Jake\Desktop\knucklesbot\node_modules\discord.js\src\client\websocket\packets\WebSocketPacketManager.js:120:65)
+    at WebSocketManager.eventMessage (C:\Users\Jake\Desktop\knucklesbot\node_modules\discord.js\src\client\websocket\WebSocketManager.js:273:31)
+    at WebSocket.onMessage (C:\Users\Jake\Desktop\knucklesbot\node_modules\ws\lib\WebSocket.js:442:14)
+    at emitTwo (events.js:106:13)
+    at WebSocket.emit (events.js:191:7)
+    at Receiver.ontext (C:\Users\Jake\Desktop\knucklesbot\node_modules\ws\lib\WebSocket.js:841:10)
+C:\Users\Jake\Desktop\knucklesbot\bot.js:37
+				for (var i = array.length - 1; i >= 0; i--) {
+				             ^
+
+ReferenceError: array is not defined
+    at Client.bot.on.msg (C:\Users\Jake\Desktop\knucklesbot\bot.js:37:18)
+    at emitOne (events.js:96:13)
+    at Client.emit (events.js:188:7)
+    at MessageCreateHandler.handle (C:\Users\Jake\Desktop\knucklesbot\node_modules\discord.js\src\client\websocket\packets\handlers\MessageCreate.js:9:34)
+    at WebSocketPacketManager.handle (C:\Users\Jake\Desktop\knucklesbot\node_modules\discord.js\src\client\websocket\packets\WebSocketPacketManager.js:120:65)
+    at WebSocketManager.eventMessage (C:\Users\Jake\Desktop\knucklesbot\node_modules\discord.js\src\client\websocket\WebSocketManager.js:273:31)
+    at WebSocket.onMessage (C:\Users\Jake\Desktop\knucklesbot\node_modules\ws\lib\WebSocket.js:442:14)
+    at emitTwo (events.js:106:13)
+    at WebSocket.emit (events.js:191:7)
+    at Receiver.ontext (C:\Users\Jake\Desktop\knucklesbot\node_modules\ws\lib\WebSocket.js:841:10)
