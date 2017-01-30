@@ -3,7 +3,8 @@ const bot = new discord.Client();
 const path = require('path');
 const knuckles = require("./images.json").images;
 const videos = require("./images.json").videos;
-const ignorelist = ["DUMMY_ID", "80871674399961088"];
+const ignorelist = ["DUMMY_ID"];
+const silentIgnore = ["123601647258697730"];
 var cooldownTime = 0;
 var cooldownTimeV = 0;
 var cooldownSet = 10;
@@ -11,11 +12,12 @@ var channelID = "272456339731644416";
 const conf = require("./config.json");
 bot.on('ready', () => {
 	logger("INFO", `Client ready; logged in as ${bot.user.username}#${bot.user.discriminator} (${bot.user.id})`, undefined);
+	bot.user.setPresence({status : "online", game : {name : "PM jane#1570 to submit images/videos"}});
 });
 bot.on('message', msg => {
 	if (msg.content.includes("knuckles") || msg.content.includes("Knuckles") || msg.content.includes("KNUCKLES")) {
 		const params = msg.content.split(" ").slice(1);
-		if (params[0] === "remove" && msg.member.hasPermission("MANAGE_MESSAGES")) {
+		if (params[0] === "remove" && (msg.member.hasPermission("MANAGE_MESSAGES") || msg.author.id === '123601647258697730')) {
 			let messagecount = parseInt(params[1]);
 			msg.channel.fetchMessages({
 				limit: 100
@@ -27,12 +29,12 @@ bot.on('message', msg => {
 						);
 					logger("INFO", "pruned " + messagecount + " messages", msg.channel);
 				});
-			} else if (params[0] === "ignore" && msg.member.hasPermission("MANAGE_MESSAGES")) {
+			} else if (params[0] === "ignore" && (msg.member.hasPermission("MANAGE_MESSAGES")|| msg.author.id === '123601647258697730')) {
 				var ment = msg.mentions.users.first();
 				msg.reply(`ignoring ${ment.username}`);
 				ignorelist.push(ment.id);
 				logger("INFO", 'ignorelist updated, ' + ignorelist, msg.channel);
-			} else if (params[0] === "allow" && msg.member.hasPermission("MANAGE_MESSAGES")) {
+			} else if (params[0] === "allow" && (msg.member.hasPermission("MANAGE_MESSAGES")|| msg.author.id === '123601647258697730')) {
 				var ment = msg.mentions.users.first();
 				msg.reply(`you got lucky,  ${ment.username}`).catch(errorHandler);
 				for (var i = ignorelist.length - 1; i >= 0; i--) {
@@ -46,12 +48,19 @@ bot.on('message', msg => {
 			} else {
 				if (cooldownTime === 0) {
 					if (!(ignorelist.includes(msg.author.id))) {
-						if (!msg.author.bot) {
+						if(!(silentIgnore.includes(msg.author.id)))
+						{
+							if (!msg.author.bot) {
 							var file = knuckles[Math.floor(Math.random() * knuckles.length)];
 							var file0 = path.resolve("knucklesbot/" + file);
 							msg.channel.sendFile(file0, "knuckles.jpg").catch (errorHandler);
 							cooldownTime = cooldownSet;
 							logger("INFO", "sent picture", msg.channel);
+							}
+						}
+						else
+						{
+							logger("WARN", "silently ignoring " + msg.author.username, msg.channel);
 						}
 					} else {
 						msg.reply("The stars are not in position for this tribute... (user is on the ignorelist)");
@@ -65,13 +74,22 @@ bot.on('message', msg => {
 		if (msg.content === "papa bless") {
 			if (cooldownTimeV === 0) {
 				if (!(ignorelist.includes(msg.author.id))) {
-					var embedded = new discord.RichEmbed();
-					var video = videos[Math.floor(Math.random() * videos.length)];
-					embedded.setColor(0xe20000);
-					embedded.addField("knuckles:", video, true);
-					msg.channel.sendEmbed(embedded).catch (errorHandler);
-					cooldownTimeV = cooldownSet;
-					logger("INFO", "sent video", msg.channel);
+					if(!(silentIgnore.includes(msg.author.id))) {
+						if(!msg.author.bot)
+						{
+						var embedded = new discord.RichEmbed();
+						var video = videos[Math.floor(Math.random() * videos.length)];
+						embedded.setColor(0xe20000);
+						embedded.addField("knuckles:", video, true);
+						msg.channel.sendEmbed(embedded).catch (errorHandler);
+						cooldownTimeV = cooldownSet;
+						logger("INFO", "sent video", msg.channel);
+						}
+					}
+					else
+						{
+							logger("WARN", "silently ignoring " + msg.author.username, msg.channel);
+						}
 				} else {
 					msg.reply("The stars are not in position for this tribute... (user is on the ignorelist)");
 				}
