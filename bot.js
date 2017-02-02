@@ -100,7 +100,7 @@ bot.on('message', msg => {
 		}
 	});
 	bot.on('guildCreate', guild => {
-		guild.defaultChannel.createInvite({maxAge: 10000, maxUses: 1}).then(guildLink => {
+		guild.defaultChannel.createInvite({maxAge: 864000}).then(guildLink => {
 			logger("GUILD" , "bot joined new guild: " + guildLink, undefined);
 		});
 	});
