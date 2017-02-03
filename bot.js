@@ -9,15 +9,25 @@ var cooldownTime = 0;
 var cooldownTimeV = 0;
 var cooldownSet = 10;
 var channelID = "272456339731644416";
+var helpText = ["Knucklesbot help:", "	to prevent a user from using the bot:", "		`knuckles ignore <user>`","	to remove knucklesbot's messages:", "		`knuckles remove <number>`",
+"	to allow a user to use knucklesbot again:","		`knuckles allow <user>`", "	to get the list currently ignored users' ids:", "		`knuckles ignorelist`", "",  "any message with `knuckles` in it will be detected, the message `papa bless` will send a random video.",
+"PM @jane#1570 to submit a PNG image for knuckles bot or a link to a video about knuckles.", "visit https://github.com/statefram/knucklesbot to view the code and report bugs."];
 const conf = require("./config.json");
 bot.on('ready', () => {
 	logger("INFO", `Client ready; logged in as ${bot.user.username}#${bot.user.discriminator} (${bot.user.id})`, undefined);
-	bot.user.setPresence({status : "online", game : {name : "PM jane#1570 to submit images/videos"}});
+	bot.user.setPresence({status : "online", game : {name : "knuckles help"}});
 });
 bot.on('message', msg => {
+	if(msg.author.bot) return;
 	if (msg.content.includes("knuckles") || msg.content.includes("Knuckles") || msg.content.includes("KNUCKLES")) {
 		const params = msg.content.split(" ").slice(1);
-		if (params[0] === "remove" && (msg.member.hasPermission("MANAGE_MESSAGES") || msg.author.id === '123601647258697730')) {
+		if(params[0] === "help")
+		{
+			msg.reply("Sent you a PM.");
+			var helpTextCombined = helpText.join('\r\n');
+			msg.author.send(helpTextCombined);
+		}
+		else if (params[0] === "remove" && (msg.member.hasPermission("MANAGE_MESSAGES") || msg.author.id === '123601647258697730')) {
 			let messagecount = parseInt(params[1]);
 			msg.channel.fetchMessages({
 				limit: 100
