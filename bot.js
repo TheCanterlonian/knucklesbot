@@ -5,8 +5,6 @@ const knuckles = require("./images.json").images;
 const videos = require("./images.json").videos;
 const silentIgnore = require("./config.json").silentignore;
 const ignorelist = ["DUMMY_ID"];
-var sqlite3 = require('sqlite3');
-var db = new sqlite3.Database('./knucklesbot/lists.db');
 var cooldownTime = 0;
 var cooldownTimeV = 0;
 var cooldownSet = 10;
@@ -15,16 +13,6 @@ var helpText = ["Knucklesbot help:", "	to prevent a user from using the bot:", "
 "	to allow a user to use knucklesbot again:","		`knuckles allow <user>`", "	to get the list currently ignored users' ids:", "		`knuckles ignorelist`", "",  "any message with `knuckles` in it will be detected, the message `papa bless` will send a random video.",
 "PM @jane#1570 to submit a PNG image for knuckles bot or a link to a video about knuckles.", "visit https://github.com/statefram/knucklesbot to view the code and report bugs."];
 const conf = require("./config.json");
-var sendDB = function(dataToAdd) {
-db.serialize(function(dataToAdd) {
-	db.run("CREATE TABLE if not exists server_info (info TEXT)");
-	var insert = db.prepare("INSERT INTO server_info VALUES (?)");
-	insert.run(dataToAdd);
-	insert.finalize();
-	db.each("SELECT rowid AS id, info FROM server_info", function(err,row) {logger("INFO", row.id + ": " + row.info, undefined);});
-});
-db.close();
-}
 bot.on('ready', () => {
 	logger("INFO", `Client ready; logged in as ${bot.user.username}#${bot.user.discriminator} (${bot.user.id})`, undefined);
 	bot.user.setPresence({status : "online", game : {name : "knuckles help"}});
