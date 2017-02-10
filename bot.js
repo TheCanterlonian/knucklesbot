@@ -1,10 +1,13 @@
 const discord = require("discord.js");
 const bot = new discord.Client();
 const path = require('path');
+const fs = require('fs');
 const knuckles = require("./images.json").images;
 const videos = require("./images.json").videos;
 const silentIgnore = require("./config.json").silentignore;
-const ignorelist = ["DUMMY_ID"];
+const globalignore = require('./ignorelist.json').global;
+var ignorelist = ["DUMMY_ID"];
+ignorelist = globalignore;
 var cooldownTime = 0;
 var cooldownTimeV = 0;
 var cooldownSet = 10;
@@ -39,12 +42,12 @@ bot.on('message', msg => {
 						);
 					logger("INFO", "pruned " + messagecount + " messages", msg.channel);
 				});
-			} else if (params[0] === "ignore" && (msg.member.hasPermission("MANAGE_MESSAGES")|| msg.author.id === '123601647258697730')) {
+			} else if (params[0] === "gignore" && (msg.member.hasPermission("MANAGE_MESSAGES")|| msg.author.id === '123601647258697730')) {
 				var ment = msg.mentions.users.first();
 				msg.reply(`ignoring ${ment.username}`);
 				ignorelist.push(ment.id);
 				logger("INFO", 'ignorelist updated, ' + ignorelist, msg.channel);
-			} else if (params[0] === "allow" && (msg.member.hasPermission("MANAGE_MESSAGES")|| msg.author.id === '123601647258697730')) {
+			} else if (params[0] === "gallow" && (msg.member.hasPermission("MANAGE_MESSAGES")|| msg.author.id === '123601647258697730')) {
 				var ment = msg.mentions.users.first();
 				msg.reply(`you got lucky,  ${ment.username}`).catch(errorHandler);
 				for (var i = ignorelist.length - 1; i >= 0; i--) {
@@ -55,6 +58,7 @@ bot.on('message', msg => {
 				logger("INFO", 'ignorelist updated, ' + ignorelist, msg.channel);
 			} else if (params[0] === "ignorelist") {
 				msg.reply(ignorelist);
+				logger("INFO", "sent ignorelist", msg.channel);
 			} else {
 				if (cooldownTime === 0) {
 					if (!(ignorelist.includes(msg.author.id))) {
