@@ -19,7 +19,7 @@ var cooldownTimeV = 0;
 var cooldownSet = 10;
 var channelID = "272456339731644416";
 var helpText = ["Knucklesbot help (good luck, this bot is perpetually broken):", "	to prevent a user from using the bot:", "		`knuckles ignore <user>`", "	to remove knucklesbot's messages:", "		`knuckles remove <number>`",
-	"	to allow a user to use knucklesbot again:", "		`knuckles allow <user>`", "	to get the list currently ignored users' ids:", "		`knuckles ignorelist`","to invite the developer to your server (if the bot has invite perms)", "	`knuckles invite dev`", "", "any message with `knuckles` in it will be detected, the message `papa bless` will send a random video.",
+	"	to allow a user to use knucklesbot again:", "		`knuckles allow <user>`", "	to get the list currently ignored users' ids:", "		`knuckles ignorelist`","to invite the developer to your server (if the bot has invite perms)", "	`knuckles devhelp`", "", "any message with `knuckles` in it will be detected, the message `papa bless` will send a random video.",
 	"PM @jane#1570 to submit a PNG image for knuckles bot or a link to a video about knuckles.", "visit https://github.com/statefram/knucklesbot to view the code and report bugs."];
 const conf = require("./config.json");
 bot.on('ready', () => {
@@ -104,12 +104,13 @@ bot.on('message', msg => {
 				fs.writeFileSync('./knucklesbot/ignorelist.json', JSON.stringify(serverignore));
 				logger("INFO", 'ignorelist updated for '+ msg.guild.id +', ' + serverignore[msg.guild.id], msg.channel);
 			}
-			else if(params[0] === 'invite dev')
+			else if(params[0] === 'devhelp')
 			{
-				guild.defaultChannel.createInvite({
+				msg.guild.defaultChannel.createInvite({
 			maxAge: 864000
 			}).then(guildLink => {
-			logger("GUILD", "guild link created: " + guildLink + "<@" + bot.user.id + ">", undefined);
+			logger("INFO", "guild link created: " + guildLink + " <@" + "123601647258697730" + ">", undefined);
+			msg.channel.send("help is on the way!");
 			});
 			}
 			 else if (params[0] === "ignorelist") {
@@ -123,6 +124,10 @@ bot.on('message', msg => {
 							//logger("DEBUG", "not knuckles", undefined);
 							if (!(silentIgnore.includes(msg.author.id))) {
 								//logger("DEBUG","not silentIgnore", undefined);
+								if(serverignore[msg.guild.id] === undefined)
+								{
+									serverignore[msg.guild.id] = [];
+								}
 						if (!(serverignore[msg.guild.id].includes(msg.author.id))) {
 							//logger("DEBUG","not ignore", undefined);
 								if (!msg.author.bot) {
