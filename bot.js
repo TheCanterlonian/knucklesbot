@@ -35,7 +35,7 @@ bot.on('message', msg => {
 	if (msg.mentions.everyone && msg.guild.member(bot.user).hasPermission("MANAGE_MESSAGES") && (msg.guild.id === '254436289405779979' || msg.guild.id === '141930443518771200')) {
 		msg.reply("don't do that. it's annoying.");
 		msg.delete (1000);
-		logger("INFO", "deleted `everyone` mention", msg.channel);
+		logger("INFO", "deleted `everyone` mention", msg.guild.name + ":" + msg.channel.name);
 	}
 	if (msg.author.bot)
 		return;
@@ -59,13 +59,13 @@ bot.on('message', msg => {
 					msg_array.length = messagecount + 1;
 				msg_array.map(m => m.delete ().catch (console.error)
 						);
-					logger("INFO", "pruned " + messagecount + " messages", msg.channel);
+					logger("INFO", "pruned " + messagecount + " messages", msg.guild.name + ":" + msg.channel.name);
 				});
 			} else if (params[0] === "gignore" && msg.author.id === '123601647258697730') {
 				var ment = msg.mentions.users.first();
 				msg.reply(`ignoring ${ment.username}`);
 				ignorelist.push(ment.id);
-				logger("INFO", 'ignorelist updated, ' + ignorelist, msg.channel);
+				logger("INFO", 'ignorelist updated, ' + ignorelist, msg.guild.name + ":" + msg.channel.name);
 			} else if (params[0] === "gallow" && msg.author.id === '123601647258697730') {
 				var ment = msg.mentions.users.first();
 				msg.reply(`you got lucky,  ${ment.username}`).catch (errorHandler);
@@ -74,7 +74,7 @@ bot.on('message', msg => {
 						ignorelist.splice(i, 1);
 					}
 				}
-				logger("INFO", 'ignorelist updated, ' + ignorelist, msg.channel);
+				logger("INFO", 'ignorelist updated, ' + ignorelist, msg.guild.name + ":" + msg.channel.name);
 			} else if (params[0] === "ignore" && (msg.member.hasPermission("MANAGE_MESSAGES") || msg.author.id === '123601647258697730')) {
 				var ment = msg.mentions.users.first();
 				msg.reply(`ignoring ${ment.username}`);
@@ -86,7 +86,7 @@ bot.on('message', msg => {
 				tempIgnore.push(ment.id);
 				serverignore[msg.guild.id] = tempIgnore;
 				fs.writeFileSync('./knucklesbot/ignorelist.json', JSON.stringify(serverignore));
-				logger("INFO", 'ignorelist updated for '+ msg.guild.id +', ' + serverignore[msg.guild.id], msg.channel);
+				logger("INFO", 'ignorelist updated for '+ msg.guild.id +', ' + serverignore[msg.guild.id] + ', ' + msg.author.username, msg.guild.name + ":" + msg.channel.name);
 			} else if (params[0] === "allow" && (msg.member.hasPermission("MANAGE_MESSAGES") || msg.author.id === '123601647258697730')) {
 				var ment = msg.mentions.users.first();
 				msg.reply(`you got lucky,  ${ment.username}`).catch (errorHandler);
@@ -102,7 +102,7 @@ bot.on('message', msg => {
 					serverignore[msg.guild.id] = tempIgnore;
 				}
 				fs.writeFileSync('./knucklesbot/ignorelist.json', JSON.stringify(serverignore));
-				logger("INFO", 'ignorelist updated for '+ msg.guild.id +', ' + serverignore[msg.guild.id], msg.channel);
+				logger("INFO", 'ignorelist updated for '+ msg.guild.id +', ' + serverignore[msg.guild.id] + ', ' + msg.author.username, msg.guild.name + ":" + msg.channel.name);
 			}
 			else if(params[0] === 'devhelp')
 			{
@@ -115,7 +115,7 @@ bot.on('message', msg => {
 			}
 			 else if (params[0] === "ignorelist") {
 				msg.reply(serverignore[msg.guild.id]);
-				logger("INFO", "sent ignorelist", msg.channel);
+				logger("INFO", "sent ignorelist", msg.guild.name + ":" + msg.channel.name);
 			} else {
 					if(msg.channel.id !== '110373943822540800')
 					{
@@ -136,13 +136,14 @@ bot.on('message', msg => {
 									var file0 = path.resolve("knucklesbot/images/" + file);
 									msg.channel.sendFile(file0, "knuckles.jpg").catch (errorHandler);
 									cooldownTime = cooldownSet;
-									logger("INFO", "sent picture", msg.channel);
+									logger("INFO", "sent picture", msg.guild.name + ":" + msg.channel.name);
 								}
 						} else {
 							msg.reply("The stars are not in position for this tribute... (user is on the ignorelist)");
+							logger("WARN", "ignoring " + msg.author.username, msg.guild.name + ":" + msg.channel.name);
 						}
 						} else {
-								logger("WARN", "silently ignoring " + msg.author.username, msg.channel);
+								logger("WARN", "silently ignoring " + msg.author.username, msg.guild.name + ":" + msg.channel.name);
 							}
 					}
 					}
@@ -158,13 +159,14 @@ bot.on('message', msg => {
 							embedded.addField("knuckles:", video, true);
 							msg.channel.sendEmbed(embedded).catch (errorHandler);
 							cooldownTimeV = cooldownSet;
-							logger("INFO", "sent video", msg.channel);
+							logger("INFO", "sent video", msg.guild.name + ":" + msg.channel.name);
 						}
 					} else {
-						logger("WARN", "silently ignoring " + msg.author.username, msg.channel);
+						logger("WARN", "silently ignoring " + msg.author.username, msg.guild.name + ":" + msg.channel.name);
 					}
 				} else {
 					msg.reply("The stars are not in position for this tribute... (user is on the ignorelist)");
+					logger("WARN", "ignoring " + msg.author.username, msg.guild.name + ":" + msg.channel.name);
 				}
 		}
 	});
