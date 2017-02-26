@@ -31,12 +31,12 @@ bot.on('ready', () => {
 		}
 	});
 });
-bot.on('message', msg => {
+/*bot.on('message', msg => {
 	if (msg.mentions.everyone && msg.guild.member(bot.user).hasPermission("MANAGE_MESSAGES") && (msg.guild.id === '254436289405779979' || msg.guild.id === '141930443518771200')) {
 		msg.reply("don't do that. it's annoying.");
 		msg.delete (1000);
 		logger("INFO", "deleted `everyone` mention", msg.guild.name + ":" + msg.channel.name);
-	}
+	}*/
 	if (msg.author.bot)
 		return;
 	if (msg.content.includes("knuckles") || msg.content.includes("Knuckles") || msg.content.includes("KNUCKLES")) {
