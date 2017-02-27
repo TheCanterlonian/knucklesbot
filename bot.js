@@ -9,6 +9,8 @@ const globalignore = require('./ignorelist.json').global;
 const ignorefile = require('./ignorelist.json');
 const logfile = require('./loglist.json');
 var ignorelist = ["DUMMY_ID"];
+var channelignore = {};
+var channelfile = require("./channels.json");
 var loglist = {};
 ignorelist = globalignore;
 var wj = false;
@@ -21,12 +23,25 @@ if(ignorefile !== undefined && ignorefile !== "")
 {
 serverignore = ignorefile;
 }
+if(channelfile !== undefined && channelfile !== "")
+{
+channelignore = channelfile;
+}
+Array.prototype.contains = function(obj) {
+    var i = this.length;
+    while (i--) {
+        if (this[i] == obj) {
+            return true;
+        }
+    }
+    return false;
+}
 var cooldownTime = 0;
 var cooldownTimeV = 0;
 var cooldownSet = 10;
 var channelID = "272456339731644416";
 var helpText = ["Knucklesbot help (good luck, this bot is perpetually broken):", "	to prevent a user from using the bot:", "		`knuckles ignore <user>`", "	to remove knucklesbot's messages:", "		`knuckles remove <number>`",
-	"	to allow a user to use knucklesbot again:", "		`knuckles allow <user>`", "	to get the list currently ignored users' ids:", "		`knuckles ignorelist`","to invite the developer to your server (if the bot has invite perms)", "	`knuckles devhelp`","to add/remove a channel to log to","		`knuckles logadd/addlog <(optional) channelid>`","		`knuckles logremove/removelog <(optional) channelid>`" , "", "any message with `knuckles` in it will be detected, the message `papa bless` will send a random video.",
+	"	to allow a user to use knucklesbot again:", "		`knuckles allow <user>`", "	to get the list currently ignored users' ids:", "		`knuckles ignorelist`","to invite the developer to your server (if the bot has invite perms)", "	`knuckles devhelp`","to add/remove a channel to log to","		`knuckles logadd/addlog <(optional) channelid>`","		`knuckles logremove/removelog <(optional) channelid>`" , "To add/remove a channel from the list of ignored channels","		`knuckles addchannel/removechannel <(optional) channelid>`",  "", "any message with `knuckles` in it will be detected, the message `papa bless` will send a random video.",
 	"PM @jane#1570 to submit a PNG image for knuckles bot or a link to a video about knuckles.", "visit https://github.com/statefram/knucklesbot to view the code and report bugs."];
 const conf = require("./config.json");
 bot.on('ready', () => {
@@ -51,7 +66,7 @@ bot.on('message', msg => {
 		if (params[0] === "help") {
 			msg.reply("Sent you a PM.");
 			var helpTextCombined = helpText.join('\r\n');
-			msg.author.send(helpTextCombined);
+			msg.author.send(helpTextCombined, {split:true});
 		} else if (params[0] === "remove" && (msg.member.hasPermission("MANAGE_MESSAGES") || msg.author.id === '123601647258697730')) {
 			let messagecount = parseInt(params[1]);
 			if(messagecount === 0 || messagecount === undefined)
@@ -82,7 +97,36 @@ bot.on('message', msg => {
 					}
 				}
 				logger("INFO", 'ignorelist updated, ' + ignorelist   , msg.channel, msg);
-			} else if (params[0] === "ignore" && (msg.member.hasPermission("MANAGE_MESSAGES") || msg.author.id === '123601647258697730')) {
+			} else if(params[0] === "addchannel") {
+				var channel = params[1] !== undefined ? bot.channels.get(params[1]) : msg.channel;
+				msg.reply(`added ${channel.name} as an ignored channel`);
+				var tempCh = channelignore[msg.guild.id];
+				if(tempCh === undefined)
+				{
+					tempCh = [];
+				}
+				tempCh.push(channel.id);
+				channelignore[msg.guild.id] = tempCh;
+				fs.writeFileSync('./knucklesbot/channels.json', JSON.stringify(channelignore));
+				logger("INFO", 'channelignore updated for '+ bot.guilds.get(msg.guild.id).name +', [' + channelignore[msg.guild.id] + '] (updated by ' + (bot.guilds.get(msg.guild.id).members.get(msg.author.id).nickname !== (undefined || null) ? bot.guilds.get(msg.guild.id).members.get(msg.author.id).nickname : msg.author.username) + ')', msg.channel, msg);
+
+			}else if(params[0] === "removechannel") {
+				var channel = params[1] !== undefined ? bot.channels.get(params[1]) : bot.channels.get(channelignore[msg.guild.id][0]);
+				msg.reply(`removed ${channel.name} as an ignored channel`).catch (errorHandler);
+				var tempCh = channelignore[msg.guild.id];
+				if(tempCh === undefined)
+				{
+					tempCh = [];
+				}
+				for (var i = tempCh.length - 1; i >= 0; i--) {
+					if (tempCh[i] === channel.id) {
+						tempCh.splice(i, 1);
+					}
+					channelignore[msg.guild.id] = tempCh;
+				}
+				fs.writeFileSync('./knucklesbot/loglist.json', JSON.stringify(channelignore));
+				logger("INFO", 'channelignore updated for '+ bot.guilds.get(msg.guild.id).name +', [' + channelignore[msg.guild.id] + '] (updated by ' + (bot.guilds.get(msg.guild.id).members.get(msg.author.id).nickname !== (undefined || null) ? bot.guilds.get(msg.guild.id).members.get(msg.author.id).nickname : msg.author.username) + ')', msg.channel, msg);
+				} else if (params[0] === "ignore" && (msg.member.hasPermission("MANAGE_MESSAGES") || msg.author.id === '123601647258697730')) {
 				var ment = msg.mentions.users.first();
 				msg.reply(`ignoring ${ment.username}`);
 				var tempIgnore = serverignore[msg.guild.id];
@@ -157,7 +201,7 @@ bot.on('message', msg => {
 				fs.writeFileSync('./knucklesbot/loglist.json', JSON.stringify(loglist));
 				logger("INFO", 'loglist updated for '+ bot.guilds.get(msg.guild.id).name +', [' + bot.channels.get(loglist[msg.guild.id]).name + '] (updated by ' + (bot.guilds.get(msg.guild.id).members.get(msg.author.id).nickname !== (undefined || null) ? bot.guilds.get(msg.guild.id).members.get(msg.author.id).nickname : msg.author.username) + ')', msg.channel, msg);
 			} else {
-					if(msg.channel.id !== '110373943822540800')
+					if(!(channelignore.contains(msg.channel.id)))
 					{
 						//logger("DEBUG", "not dbots", undefined);
 						if (bot.user.id !== msg.author.id) {

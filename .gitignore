@@ -32,6 +32,7 @@ $RECYCLE.BIN/
 ._*
 loglist.json
 ignorelist.json
+channels.json
 # Files that might appear in the root of a volume
 .DocumentRevisions-V100
 .fseventsd
@@ -43,6 +44,7 @@ ignorelist.json
 /err.txt
 /log.txt
 /out.txt
+
 # Directories potentially created on remote AFP share
 .AppleDB
 .AppleDesktop
