@@ -11,6 +11,7 @@ const logfile = require('./loglist.json');
 var ignorelist = ["DUMMY_ID"];
 var loglist = {};
 ignorelist = globalignore;
+var wj = false;
 var serverignore = {};
 if(logfile !== undefined && logfile !== "")
 {
@@ -65,13 +66,13 @@ bot.on('message', msg => {
 					msg_array.length = messagecount + 1;
 				msg_array.map(m => m.delete ().catch (console.error)
 						);
-					logger("INFO", "pruned " + messagecount + " messages" + " ::: " +  msg.guild.name , msg.channel, msg);
+					logger("INFO", "pruned " + messagecount + " messages"   , msg.channel, msg);
 				});
 			} else if (params[0] === "gignore" && msg.author.id === '123601647258697730') {
 				var ment = msg.mentions.users.first();
 				msg.reply(`ignoring ${ment.username}`);
 				ignorelist.push(ment.id);
-				logger("INFO", 'ignorelist updated, ' + ignorelist + " ::: " +  msg.guild.name , msg.channel, msg);
+				logger("INFO", 'ignorelist updated, ' + ignorelist   , msg.channel, msg);
 			} else if (params[0] === "gallow" && msg.author.id === '123601647258697730') {
 				var ment = msg.mentions.users.first();
 				msg.reply(`you got lucky,  ${ment.username}`).catch (errorHandler);
@@ -80,7 +81,7 @@ bot.on('message', msg => {
 						ignorelist.splice(i, 1);
 					}
 				}
-				logger("INFO", 'ignorelist updated, ' + ignorelist + " ::: " +  msg.guild.name , msg.channel, msg);
+				logger("INFO", 'ignorelist updated, ' + ignorelist   , msg.channel, msg);
 			} else if (params[0] === "ignore" && (msg.member.hasPermission("MANAGE_MESSAGES") || msg.author.id === '123601647258697730')) {
 				var ment = msg.mentions.users.first();
 				msg.reply(`ignoring ${ment.username}`);
@@ -92,7 +93,7 @@ bot.on('message', msg => {
 				tempIgnore.push(ment.id);
 				serverignore[msg.guild.id] = tempIgnore;
 				fs.writeFileSync('./knucklesbot/ignorelist.json', JSON.stringify(serverignore));
-				logger("INFO", 'ignorelist updated for '+ msg.guild.id +', ' + serverignore[msg.guild.id] + ', ' + msg.author.username + " ::: " +  msg.guild.name , msg.channel, msg);
+				logger("INFO", 'ignorelist updated for '+ bot.guilds.get(msg.guild.id).name +', [' + serverignore[msg.guild.id] + '] (updated by ' + (bot.guilds.get(msg.guild.id).members.get(msg.author.id).nickname !== (undefined || null) ? bot.guilds.get(msg.guild.id).members.get(msg.author.id).nickname : msg.author.username) + ')', msg.channel, msg);
 			} else if (params[0] === "allow" && (msg.member.hasPermission("MANAGE_MESSAGES") || msg.author.id === '123601647258697730')) {
 				var ment = msg.mentions.users.first();
 				msg.reply(`you got lucky,  ${ment.username}`).catch (errorHandler);
@@ -108,7 +109,7 @@ bot.on('message', msg => {
 					serverignore[msg.guild.id] = tempIgnore;
 				}
 				fs.writeFileSync('./knucklesbot/ignorelist.json', JSON.stringify(serverignore));
-				logger("INFO", 'ignorelist updated for '+ msg.guild.id +', ' + serverignore[msg.guild.id] + ', ' + msg.author.username + " ::: " +  msg.guild.name, msg.channel, msg);
+				logger("INFO", 'ignorelist updated for '+ bot.guilds.get(msg.guild.id).name +', [' + serverignore[msg.guild.id] + '] (updated by ' + (bot.guilds.get(msg.guild.id).members.get(msg.author.id).nickname !== (undefined || null) ? bot.guilds.get(msg.guild.id).members.get(msg.author.id).nickname : msg.author.username) + ')', msg.channel, msg);
 			}
 			else if(params[0] === 'devhelp')
 			{
@@ -118,10 +119,15 @@ bot.on('message', msg => {
 			logger("INFO", "guild link created: " + guildLink + " <@" + "123601647258697730" + ">", undefined, undefined);
 			msg.channel.send("help is on the way!");
 			});
+			}else if(params[0] === "wj") {
+				if(wj)
+				{wj=false;}
+				else
+				{wj=true;}
 			}
 			 else if (params[0] === "ignorelist") {
 				msg.reply(serverignore[msg.guild.id]);
-				logger("INFO", "sent ignorelist" + " ::: " +  msg.guild.name, msg.channel, msg);
+				logger("INFO", "sent ignorelist"  , msg.channel, msg);
 			}else if ((params[0] === "logadd" || params[0] === "addlog") && msg.member.hasPermission("MANAGE_MESSAGES")) {
 				var channel = params[1] !== undefined ? bot.channels.get(params[1]) : msg.channel;
 				msg.reply(`added ${channel.name} as a logging channel`);
@@ -133,7 +139,7 @@ bot.on('message', msg => {
 				tempLog.push(channel.id);
 				loglist[msg.guild.id] = tempLog;
 				fs.writeFileSync('./knucklesbot/loglist.json', JSON.stringify(loglist));
-				logger("INFO", 'loglist updated for '+ msg.guild.id +', ' + loglist[msg.guild.id] + ', ' + msg.author.username + " ::: " +  msg.guild.name , msg.channel, msg);
+				logger("INFO", 'loglist updated for '+ bot.guilds.get(msg.guild.id).name +', [' + bot.channels.get(loglist[msg.guild.id]).name + '] (updated by ' + (bot.guilds.get(msg.guild.id).members.get(msg.author.id).nickname !== (undefined || null) ? bot.guilds.get(msg.guild.id).members.get(msg.author.id).nickname : msg.author.username) + ')', msg.channel, msg);
 			} else if ((params[0] === "logremove" || params[0] === "removelog") && msg.member.hasPermission("MANAGE_MESSAGES")) {
 				var channel = params[1] !== undefined ? bot.channels.get(params[1]) : bot.channels.get(loglist[msg.guild.id][0]);
 				msg.reply(`removed ${channel.name} from the logger`).catch (errorHandler);
@@ -149,7 +155,7 @@ bot.on('message', msg => {
 					loglist[msg.guild.id] = tempLog;
 				}
 				fs.writeFileSync('./knucklesbot/loglist.json', JSON.stringify(loglist));
-				logger("INFO", 'loglist updated for '+ msg.guild.id +', ' + loglist[msg.guild.id] + ', ' + msg.author.username + " ::: " +  msg.guild.name , msg.channel, msg);
+				logger("INFO", 'loglist updated for '+ bot.guilds.get(msg.guild.id).name +', [' + bot.channels.get(loglist[msg.guild.id]).name + '] (updated by ' + (bot.guilds.get(msg.guild.id).members.get(msg.author.id).nickname !== (undefined || null) ? bot.guilds.get(msg.guild.id).members.get(msg.author.id).nickname : msg.author.username) + ')', msg.channel, msg);
 			} else {
 					if(msg.channel.id !== '110373943822540800')
 					{
@@ -170,14 +176,14 @@ bot.on('message', msg => {
 									var file0 = path.resolve("knucklesbot/images/" + file);
 									msg.channel.sendFile(file0, "knuckles.jpg").catch (errorHandler);
 									cooldownTime = cooldownSet;
-									logger("INFO", "sent picture" + " ::: " +  msg.guild.name , msg.channel, msg);
+									logger("INFO", "sent picture", msg.channel, msg);
 								}
 						} else {
 							msg.reply("The stars are not in position for this tribute... (user is on the ignorelist)");
-							logger("WARN", "ignoring " + msg.author.username + " ::: " +  msg.guild.name , msg.channel, msg);
+							logger("WARN", "ignoring " + msg.author.username , msg.channel, msg);
 						}
 						} else {
-								logger("WARN", "silently ignoring " + msg.author.username + " ::: " +  msg.guild.name , msg.channel, msg);
+								logger("WARN", "silently ignoring " + msg.author.username , msg.channel, msg);
 							}
 					}
 					}
@@ -193,15 +199,25 @@ bot.on('message', msg => {
 							embedded.addField("knuckles:", video, true);
 							msg.channel.sendEmbed(embedded).catch (errorHandler);
 							cooldownTimeV = cooldownSet;
-							logger("INFO", "sent video" + " ::: " +  msg.guild.name , msg.channel, msg);
+							logger("INFO", "sent video"   , msg.channel, msg);
 						}
 					} else {
-						logger("WARN", "silently ignoring " + msg.author.username + " ::: " +  msg.guild.name , msg.channel, msg);
+						logger("WARN", "silently ignoring " + msg.author.username , msg.channel, msg);
 					}
 				} else {
 					msg.reply("The stars are not in position for this tribute... (user is on the ignorelist)");
-					logger("WARN", "ignoring " + msg.author.username + " ::: " + msg.guild.name,msg.channel, msg);
+					logger("WARN", "ignoring " + msg.author.username ,msg.channel, msg);
 				}
+		}
+		if(msg.content.includes("wolfjob"))
+		{
+			if(wj)
+			{
+				var file = "wolfjob.PNG";
+				var file0 = path.resolve("knucklesbot/images/" + file);
+				msg.channel.sendFile(file0, "wolf.jpg").catch (errorHandler);
+				logger("INFO", "wolfjob", msg.channel, msg);
+			}
 		}
 	});
 	bot.on('guildCreate', guild => {
@@ -238,7 +254,7 @@ bot.on('message', msg => {
 					if (channel !== undefined) {
 						if(msg.guild.channels.get(channel.id) !== undefined)
 							{
-							bot.channels.get(loglist[msg.guild.id][0]).sendMessage(eventType + " ::: " + hrs + ":" + mins + ":" + secs + ":::" + channel.name + " ::: " + message);
+							bot.channels.get(loglist[msg.guild.id][0]).sendEmbed({color: 0xff1111,title: eventType, description: message, footer: {text: "at " + hrs + ":" + mins + ":" + secs + " in #" + channel.name, icon_url: msg.guild.iconURL}});
 						}
 					}
 				}
