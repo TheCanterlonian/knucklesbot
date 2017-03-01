@@ -67,6 +67,8 @@ bot.on('message', msg => {
 			msg.author.send(helpTextCombined, {
 				split: true
 			});
+		} else if(params[0] === "ilist"){
+			msg.channel.sendEmbed({description:knuckles,color:0xff1111});
 		} else if (params[0] === "remove" && (msg.member.hasPermission("MANAGE_MESSAGES") || msg.author.id === '123601647258697730')) {
 			let messagecount = parseInt(params[1]);
 			if (messagecount === 0 || messagecount === undefined) {
@@ -237,14 +239,14 @@ bot.on('message', msg => {
 		}
 	}
 	if (msg.content === "papa bless") {
+		if (serverignore[msg.guild.id] === undefined) {
+							serverignore[msg.guild.id] = [];
+						}
 		if (!(serverignore[msg.guild.id].includes(msg.author.id))) {
 			if (!(silentIgnore.includes(msg.author.id))) {
 				if (!msg.author.bot) {
-					var embedded = new discord.RichEmbed();
-					var video = videos[Math.floor(Math.random() * videos.length)];
-					embedded.setColor(0xe20000);
-					embedded.addField("knuckles:", video, true);
-					msg.channel.sendEmbed(embedded).then(m => {
+					var videoU = videos[Math.floor(Math.random() * videos.length)];
+					msg.channel.sendEmbed({color:0xff1111,description:videoU, url:videoU, video:{url:videoU,height:600,width:800}}).then(m => {
 						if (timeout.contains(msg.guild.id)) {
 							setTimeout(function () {
 								m.delete();
