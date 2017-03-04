@@ -12,6 +12,7 @@ var ignorelist = ["DUMMY_ID"];
 var channelignore = {};
 var channelfile = require("./channels.json");
 var loglist = {};
+var emoji = require('node-emoji');
 var timeout = require('./config.json').experimental;
 ignorelist = globalignore;
 var wj = false;
@@ -40,7 +41,7 @@ var cooldownSet = 10;
 var channelID = "272456339731644416";
 var helpText = ["Knucklesbot help (good luck, this bot is perpetually broken):", "	to prevent a user from using the bot:", "		`knuckles ignore <user>`", "	to remove knucklesbot's messages:", "		`knuckles remove <number>`",
 	"	to allow a user to use knucklesbot again:", "		`knuckles allow <user>`", "	to get the list currently ignored users' ids:", "		`knuckles ignorelist`", "to invite the developer to your server (if the bot has invite perms)", "	`knuckles devhelp`", "to add/remove a channel to log to", "		`knuckles logadd/addlog <(optional) channelid>`", "		`knuckles logremove/removelog <(optional) channelid>`", "To add/remove a channel from the list of ignored channels", "		`knuckles addchannel/removechannel <(optional) channelid>`", "", "any message with `knuckles` in it will be detected, the message `papa bless` will send a random video.",
-	"PM @jane#1570 to submit a PNG image for knuckles bot or a link to a video about knuckles.", "visit https://github.com/statefram/knucklesbot to view the code and report bugs."];
+	"PM <@123601647258697730> to submit a PNG image for knuckles bot or a link to a video about knuckles.", "visit https://github.com/statefram/knucklesbot to view the code and report bugs."];
 const conf = require("./config.json");
 bot.on('ready', () => {
 	logger("INFO", `Client ready; logged in as ${bot.user.username}#${bot.user.discriminator} (${bot.user.id})`, undefined, undefined);
@@ -59,16 +60,18 @@ bot.on('message', msg => {
 	}*/
 	if (msg.author.bot)
 		return;
-	if (msg.content.includes("knuckles") || msg.content.includes("Knuckles") || msg.content.includes("KNUCKLES")) {
+	if (msg.content.toUpperCase().includes("KNUCKLES") || msg.isMentioned(bot.user)) {
 		const params = msg.content.split(" ").slice(1);
+		const code = msg.content.split(" ").slice(2).join(" ");
 		if (params[0] === "help") {
 			msg.reply("Sent you a PM.");
 			var helpTextCombined = helpText.join('\r\n');
 			msg.author.send(helpTextCombined, {
 				split: true
 			});
-		} else if(params[0] === "ilist"){
-			msg.channel.sendEmbed({description:knuckles,color:0xff1111});
+		} else if (params[0] === "ilist") {
+			var images = knuckles.toString().replace(/,/g, "   \n   ");
+			msg.channel.sendEmbed({ title: "imgs", description: images, color: 0xff1111 });
 		} else if (params[0] === "remove" && (msg.member.hasPermission("MANAGE_MESSAGES") || msg.author.id === '123601647258697730')) {
 			let messagecount = parseInt(params[1]);
 			if (messagecount === 0 || messagecount === undefined) {
@@ -79,7 +82,7 @@ bot.on('message', msg => {
 			}).then(messages => {
 				let msg_array = messages.array();
 				msg_array = msg_array.filter(m => m.author.id === bot.user.id)
-				msg_array.length = messagecount + 1;
+				msg_array.length = messagecount;
 				msg_array.map(m => m.delete().catch(console.error)
 				);
 				logger("INFO", "pruned " + messagecount + " messages", msg.channel, msg);
@@ -98,7 +101,7 @@ bot.on('message', msg => {
 				}
 			}
 			logger("INFO", 'ignorelist updated, ' + ignorelist, msg.channel, msg);
-		} else if (params[0] === "addchannel") {
+		} else if (params[0] === "addchannel" && (msg.member.hasPermission("MANAGE_MESSAGES") || msg.author.id === '123601647258697730')) {
 			var channel = params[1] !== undefined ? bot.channels.get(params[1]) : msg.channel;
 			msg.reply(`added ${channel.name} as an ignored channel`);
 			var tempCh = channelignore[msg.guild.id];
@@ -110,7 +113,7 @@ bot.on('message', msg => {
 			fs.writeFileSync('./knucklesbot/channels.json', JSON.stringify(channelignore));
 			logger("INFO", 'channelignore updated for ' + bot.guilds.get(msg.guild.id).name + ', [' + channelignore[msg.guild.id] + '] (updated by ' + (bot.guilds.get(msg.guild.id).members.get(msg.author.id).nickname !== (undefined || null) ? bot.guilds.get(msg.guild.id).members.get(msg.author.id).nickname : msg.author.username) + ')', msg.channel, msg);
 
-		} else if (params[0] === "removechannel") {
+		} else if (params[0] === "removechannel" && (msg.member.hasPermission("MANAGE_MESSAGES") || msg.author.id === '123601647258697730')) {
 			var channel = params[1] !== undefined ? bot.channels.get(params[1]) : bot.channels.get(channelignore[msg.guild.id][0]);
 			msg.reply(`removed ${channel.name} as an ignored channel`).catch(errorHandler);
 			var tempCh = channelignore[msg.guild.id];
@@ -123,7 +126,7 @@ bot.on('message', msg => {
 				}
 				channelignore[msg.guild.id] = tempCh;
 			}
-			fs.writeFileSync('./knucklesbot/loglist.json', JSON.stringify(channelignore));
+			fs.writeFileSync('./knucklesbot/channels.json', JSON.stringify(channelignore));
 			logger("INFO", 'channelignore updated for ' + bot.guilds.get(msg.guild.id).name + ', [' + channelignore[msg.guild.id] + '] (updated by ' + (bot.guilds.get(msg.guild.id).members.get(msg.author.id).nickname !== (undefined || null) ? bot.guilds.get(msg.guild.id).members.get(msg.author.id).nickname : msg.author.username) + ')', msg.channel, msg);
 		} else if (params[0] === "ignore" && (msg.member.hasPermission("MANAGE_MESSAGES") || msg.author.id === '123601647258697730')) {
 			var ment = msg.mentions.users.first();
@@ -151,6 +154,8 @@ bot.on('message', msg => {
 			}
 			fs.writeFileSync('./knucklesbot/ignorelist.json', JSON.stringify(serverignore));
 			logger("INFO", 'ignorelist updated for ' + bot.guilds.get(msg.guild.id).name + ', [' + serverignore[msg.guild.id] + '] (updated by ' + (bot.guilds.get(msg.guild.id).members.get(msg.author.id).nickname !== (undefined || null) ? bot.guilds.get(msg.guild.id).members.get(msg.author.id).nickname : msg.author.username) + ')', msg.channel, msg);
+		} else if (params[0] === 'say' && msg.author.id === "123601647258697730") {
+			msg.channel.send(code);
 		} else if (params[0] === 'devhelp') {
 			msg.guild.defaultChannel.createInvite({
 				maxAge: 864000
@@ -158,14 +163,19 @@ bot.on('message', msg => {
 				logger("INFO", "guild link created: " + guildLink + " <@" + "123601647258697730" + ">", undefined, undefined);
 				msg.channel.send("help is on the way!");
 			});
-		} else if (params[0] === "wj") {
+		} else if (params[0] === "wj" && msg.author.id === "123601647258697730") {
 			if (wj) {
 				wj = false;
+				msg.channel.send(emoji.get("regional_indicator_x"));
 			} else {
 				wj = true;
+				msg.channel.send(emoji.get("white_check_mark"));
 			}
 		} else if (params[0] === "ignorelist") {
-			msg.reply(serverignore[msg.guild.id]);
+			if (serverignore[msg.guild.id] === undefined) {
+				serverignore[msg.guild.id] = [];
+			}
+			msg.reply("[" + serverignore[msg.guild.id] + "]");
 			logger("INFO", "sent ignorelist", msg.channel, msg);
 		} else if ((params[0] === "logadd" || params[0] === "addlog") && msg.member.hasPermission("MANAGE_MESSAGES")) {
 			var channel = params[1] !== undefined ? bot.channels.get(params[1]) : msg.channel;
@@ -240,13 +250,13 @@ bot.on('message', msg => {
 	}
 	if (msg.content === "papa bless") {
 		if (serverignore[msg.guild.id] === undefined) {
-							serverignore[msg.guild.id] = [];
-						}
+			serverignore[msg.guild.id] = [];
+		}
 		if (!(serverignore[msg.guild.id].includes(msg.author.id))) {
 			if (!(silentIgnore.includes(msg.author.id))) {
 				if (!msg.author.bot) {
 					var videoU = videos[Math.floor(Math.random() * videos.length)];
-					msg.channel.sendEmbed({color:0xff1111,description:videoU, url:videoU, video:{url:videoU,height:600,width:800}}).then(m => {
+					msg.channel.sendEmbed({ color: 0xff1111, description: videoU, url: videoU, video: { url: videoU, height: 600, width: 800 } }).then(m => {
 						if (timeout.contains(msg.guild.id)) {
 							setTimeout(function () {
 								m.delete();
@@ -266,16 +276,32 @@ bot.on('message', msg => {
 	}
 	if (msg.content.includes("wolfjob")) {
 		if (wj) {
-			var file = "wolfjob.PNG";
-			var file0 = path.resolve("knucklesbot/images/" + file);
-			msg.channel.sendFile(file0, "wolf.jpg").then(m => {
+			if (!(serverignore[msg.guild.id].includes(msg.author.id))) {
+				var file = "wolfjob.PNG";
+				var file0 = path.resolve("knucklesbot/images/" + file);
+				msg.channel.sendFile(file0, "wolf.jpg").then(m => {
+					if (timeout.contains(msg.guild.id)) {
+						setTimeout(function () {
+							m.delete();
+						}, 600000)
+					}
+				}).catch(errorHandler);
+				logger("INFO", "wolfjob", msg.channel, msg);
+			}
+		}
+	}
+	if (msg.content.includes("shadow")) {
+		if (!(serverignore[msg.guild.id].includes(msg.author.id))) {
+			if (channelignore[msg.guild.id] === undefined) {
+				channelignore[msg.guild.id] = [];
+			}
+			if (!(channelignore[msg.guild.id].contains(msg.channel.id))) {
 				if (timeout.contains(msg.guild.id)) {
-					setTimeout(function () {
-						m.delete();
-					}, 600000)
+					var file0 = path.resolve("knucklesbot/images/" + "Training_for_fight_scene_by_manaita.png");
+					msg.channel.sendFile(file0, "knuckles.jpg").catch(errorHandler);
+					logger("INFO", "shadow", msg.channel, msg);
 				}
-			}).catch(errorHandler);
-			logger("INFO", "wolfjob", msg.channel, msg);
+			}
 		}
 	}
 });
@@ -304,7 +330,7 @@ function logger(eventType, message, channel, msg) {
 		var secs = date.getSeconds();
 	}
 	if (msg !== undefined) {
-		console.log(eventType + " ::: " + hrs + ":" + mins + ":" + secs + " ::: " + message + " (" + (msg.guild.name !== undefined ? msg.guild.name : "undefined") + ": #" + (channel.name!== undefined ? msg.channel.name : "undefined") +")");
+		console.log(eventType + " ::: " + hrs + ":" + mins + ":" + secs + " ::: " + message + " (" + (msg.guild.name !== undefined ? msg.guild.name : "undefined") + ": #" + (channel.name !== undefined ? msg.channel.name : "undefined") + ")");
 		if (loglist[msg.guild.id] !== undefined) {
 			if (bot.channels.get(loglist[msg.guild.id][0]) !== undefined) {
 				if (channel !== undefined) {
@@ -323,8 +349,7 @@ function logger(eventType, message, channel, msg) {
 			}
 		}
 	}
-	else
-	{
-console.log(eventType + " ::: " + hrs + ":" + mins + ":" + secs + " ::: " + message);
+	else {
+		console.log(eventType + " ::: " + hrs + ":" + mins + ":" + secs + " ::: " + message);
 	}
 }
