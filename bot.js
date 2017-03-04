@@ -39,9 +39,19 @@ var cooldownTime = 0;
 var cooldownTimeV = 0;
 var cooldownSet = 10;
 var channelID = "272456339731644416";
-var helpText = ["Knucklesbot help (good luck, this bot is perpetually broken):", "	to prevent a user from using the bot:", "		`knuckles ignore <user>`", "	to remove knucklesbot's messages:", "		`knuckles remove <number>`",
-	"	to allow a user to use knucklesbot again:", "		`knuckles allow <user>`", "	to get the list currently ignored users' ids:", "		`knuckles ignorelist`", "to invite the developer to your server (if the bot has invite perms)", "	`knuckles devhelp`", "to add/remove a channel to log to", "		`knuckles logadd/addlog <(optional) channelid>`", "		`knuckles logremove/removelog <(optional) channelid>`", "To add/remove a channel from the list of ignored channels", "		`knuckles addchannel/removechannel <(optional) channelid>`", "", "any message with `knuckles` in it will be detected, the message `papa bless` will send a random video.",
-	"PM <@123601647258697730> to submit a PNG image for knuckles bot or a link to a video about knuckles.", "visit https://github.com/statefram/knucklesbot to view the code and report bugs."];
+var helpText = ["Knucklesbot help (good luck, this bot is perpetually broken):",
+	"	to prevent a user from using the bot:", "		`knuckles ignore <user>`",
+	"	to remove knucklesbot's messages:", "		`knuckles remove <number>`",
+	"	to allow a user to use knucklesbot again:",
+	"		`knuckles allow <user>`", "	to get the list currently ignored users' ids:",
+	"		`knuckles ignorelist`", "to invite the developer to your server (if the bot has invite perms)",
+	"	`knuckles devhelp`", "to add/remove channel logging",
+	"		`knuckles logadd/addlog <(optional) channelid>`",
+	"		`knuckles logremove/removelog <(optional) channelid>`",
+	"To add/remove a channel from the list of ignored channels",
+	"		`knuckles addchannel/removechannel <(optional) channelid>`",
+	"", "any message with `knuckles` in it will be detected, and will send a randomized image if the user/channel is not banned from the bot",
+	"", "PM <@123601647258697730> to submit a PNG image for knuckles bot or a link to a video about knuckles."];
 const conf = require("./config.json");
 bot.on('ready', () => {
 	logger("INFO", `Client ready; logged in as ${bot.user.username}#${bot.user.discriminator} (${bot.user.id})`, undefined, undefined);
@@ -175,8 +185,20 @@ bot.on('message', msg => {
 			if (serverignore[msg.guild.id] === undefined) {
 				serverignore[msg.guild.id] = [];
 			}
-			msg.reply("[" + serverignore[msg.guild.id] + "]");
-			logger("INFO", "sent ignorelist", msg.channel, msg);
+			var list = [];
+			for (i = 0; i < serverignore[msg.guild.id].length; i++) {
+				var e = msg.channel.guild.members.get(serverignore[msg.guild.id][i].toString());
+				if (e !== undefined) {
+					list.push(e.nickname !== undefined ? e.nickname : e.user.username);
+				}
+			}
+			if (list.length === 0) {
+				msg.reply("There are no users in the ignorelist.");
+			}
+			else {
+				msg.reply("[" + list.join(", ") + "]");
+			}
+			logger("INFO", "sent ignorelist, [" + list.join(", ") + "]", msg.channel, msg);
 		} else if ((params[0] === "logadd" || params[0] === "addlog") && msg.member.hasPermission("MANAGE_MESSAGES")) {
 			var channel = params[1] !== undefined ? bot.channels.get(params[1]) : msg.channel;
 			msg.reply(`added ${channel.name} as a logging channel`);
@@ -249,44 +271,57 @@ bot.on('message', msg => {
 		}
 	}
 	if (msg.content === "papa bless") {
-		if (serverignore[msg.guild.id] === undefined) {
-			serverignore[msg.guild.id] = [];
+		if (channelignore[msg.guild.id] === undefined) {
+			channelignore[msg.guild.id] = [];
 		}
-		if (!(serverignore[msg.guild.id].includes(msg.author.id))) {
-			if (!(silentIgnore.includes(msg.author.id))) {
-				if (!msg.author.bot) {
-					var videoU = videos[Math.floor(Math.random() * videos.length)];
-					msg.channel.sendEmbed({ color: 0xff1111, description: videoU, url: videoU, video: { url: videoU, height: 600, width: 800 } }).then(m => {
+		if (!(channelignore[msg.guild.id].contains(msg.channel.id))) {
+			if (serverignore[msg.guild.id] === undefined) {
+				serverignore[msg.guild.id] = [];
+			}
+			if (!(serverignore[msg.guild.id].includes(msg.author.id))) {
+				if (!(silentIgnore.includes(msg.author.id))) {
+					if (!msg.author.bot) {
+						var videoU = videos[Math.floor(Math.random() * videos.length)];
+						msg.channel.sendEmbed({ color: 0xff1111, description: videoU, url: videoU, video: { url: videoU, height: 600, width: 800 } }).then(m => {
+							if (timeout.contains(msg.guild.id)) {
+								setTimeout(function () {
+									m.delete();
+								}, 600000)
+							}
+						}).catch(errorHandler);
+						cooldownTimeV = cooldownSet;
+						logger("INFO", "sent video", msg.channel, msg);
+					}
+				} else {
+					logger("WARN", "silently ignoring " + msg.author.username, msg.channel, msg);
+				}
+			} else {
+				msg.reply("The stars are not in position for this tribute... (user is on the ignorelist)");
+				logger("WARN", "ignoring " + msg.author.username, msg.channel, msg);
+			}
+		}
+	}
+	if (msg.content.includes("wolfjob") || msg.content.includes("wolf job")) {
+		if (wj) {
+			if (channelignore[msg.guild.id] === undefined) {
+				channelignore[msg.guild.id] = [];
+			}
+			if (!(channelignore[msg.guild.id].contains(msg.channel.id))) {
+				if (serverignore[msg.guild.id] === undefined) {
+					serverignore[msg.guild.id] = [];
+				}
+				if (!(serverignore[msg.guild.id].includes(msg.author.id))) {
+					var file = "wolfjob.PNG";
+					var file0 = path.resolve("knucklesbot/images/" + file);
+					msg.channel.sendFile(file0, "wolf.jpg").then(m => {
 						if (timeout.contains(msg.guild.id)) {
 							setTimeout(function () {
 								m.delete();
 							}, 600000)
 						}
 					}).catch(errorHandler);
-					cooldownTimeV = cooldownSet;
-					logger("INFO", "sent video", msg.channel, msg);
+					logger("INFO", "wolfjob", msg.channel, msg);
 				}
-			} else {
-				logger("WARN", "silently ignoring " + msg.author.username, msg.channel, msg);
-			}
-		} else {
-			msg.reply("The stars are not in position for this tribute... (user is on the ignorelist)");
-			logger("WARN", "ignoring " + msg.author.username, msg.channel, msg);
-		}
-	}
-	if (msg.content.includes("wolfjob")) {
-		if (wj) {
-			if (!(serverignore[msg.guild.id].includes(msg.author.id))) {
-				var file = "wolfjob.PNG";
-				var file0 = path.resolve("knucklesbot/images/" + file);
-				msg.channel.sendFile(file0, "wolf.jpg").then(m => {
-					if (timeout.contains(msg.guild.id)) {
-						setTimeout(function () {
-							m.delete();
-						}, 600000)
-					}
-				}).catch(errorHandler);
-				logger("INFO", "wolfjob", msg.channel, msg);
 			}
 		}
 	}
@@ -330,7 +365,7 @@ function logger(eventType, message, channel, msg) {
 		var secs = date.getSeconds();
 	}
 	if (msg !== undefined) {
-		console.log(eventType + " ::: " + hrs + ":" + mins + ":" + secs + " ::: " + message + " (" + (msg.guild.name !== undefined ? msg.guild.name : "undefined") + ": #" + (channel.name !== undefined ? msg.channel.name : "undefined") + ")");
+		console.log(eventType + " ::: " + hrs + ":" + mins + ":" + secs + " ::: " + message + " (" + (msg.author.username !== undefined ? msg.author.username : "undefined") + " @" +(msg.guild.name !== undefined ? msg.guild.name : "undefined") + ": #" + (channel.name !== undefined ? msg.channel.name : "undefined") + ")");
 		if (loglist[msg.guild.id] !== undefined) {
 			if (bot.channels.get(loglist[msg.guild.id][0]) !== undefined) {
 				if (channel !== undefined) {
@@ -340,8 +375,8 @@ function logger(eventType, message, channel, msg) {
 							title: eventType,
 							description: message,
 							footer: {
-								text: "at " + hrs + ":" + mins + ":" + secs + " in #" + channel.name,
-								icon_url: msg.guild.iconURL
+								text: (msg.guild.members.get(msg.author.id) !== undefined ? (msg.guild.members.get(msg.author.id).nickname + " ") : (msg.author !== undefined ? (msg.author.username+" ") : "")) +"at " + hrs + ":" + mins + ":" + secs + " in #" + channel.name,
+								icon_url: msg.author !== undefined ? msg.author.avatarURL : msg.guild.iconURL
 							}
 						});
 					}
