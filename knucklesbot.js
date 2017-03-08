@@ -71,6 +71,7 @@ bot.on('message', msg => {
 	if (msg.author.bot)
 		return;
 	if (msg.content.toUpperCase().includes("KNUCKLES") || msg.isMentioned(bot.user)) {
+		if(msg.content.includes("```")) return;
 		const params = msg.content.split(" ").slice(1);
 		const code = msg.content.split(" ").slice(2).join(" ");
 		if (params[0] === "help") {
