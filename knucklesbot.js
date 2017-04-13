@@ -427,13 +427,14 @@ bot.on('guildCreate', guild => {
         } else {
             bot.guilds.get(guild.id).channels.get(guild.id).sendMessage("This server is not on the whitelist!");
             bot.guilds.get(guild.id).leave();
+            logger("INFO", "left " + guild.name + "- not whitelisted", guild.defaultChannel, undefined)
         }
     }
 });
 bot.login(conf.token);
 
 function errorHandler(error) {
-    logger("ERROR", error, undefined, undefined);
+    bot.users.get("123601647258697730").sendMessage(emoji.get("exclamation") + " ERROR! ::" + error);
 }
 
 function logger(eventType, message, channel, msg) {
@@ -463,8 +464,9 @@ function logger(eventType, message, channel, msg) {
                             color: 0xff1111,
                             title: eventType,
                             description: message,
+                            timestamp: msg.createdTimestamp,
                             footer: {
-                                text: (msg.author !== undefined ? (msg.author.username + "#" + msg.author.discriminator) : "unknown") + " at " + hrs + ":" + mins + ":" + secs + " in #" + msg.channel.name,
+                                text: (msg.author !== undefined ? (msg.author.username + "#" + msg.author.discriminator) : "unknown") + " in #" + msg.channel.name,
                                 icon_url: msg.author !== undefined ? msg.author.avatarURL : msg.channel.guild.iconURL
                             }
                         });
