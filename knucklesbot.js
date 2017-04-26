@@ -48,11 +48,16 @@ var cooldownSet = 10;
 var channelID = "272456339731644416";
 var helpText = ["Knucklesbot help (good luck, this bot is perpetually broken):", " to prevent a user from using the bot:", "  `knuckles ignore <user>`", " to remove knucklesbot's messages:", "  `knuckles remove <number>`", " to allow a user to use knucklesbot again:", "  `knuckles allow <user>`", " to get the list currently ignored users' ids:", "  `knuckles ignorelist`", "to invite the developer to your server (if the bot has invite perms)", " `knuckles devhelp`", "to add/remove channel logging", "  `knuckles logadd/addlog <(optional) channelid>`", "  `knuckles logremove/removelog <(optional) channelid>`", "To add/remove a channel from the list of ignored channels", "  `knuckles addchannel/removechannel <(optional) channelid>`", "", "any message with `knuckles` in it will be detected, and will send a randomized i" + "mage if the user/channel is not banned from the bot", "", "PM <@123601647258697730> to get an invite, submit a PNG image for knuckles bot or submit a link to a v" + "ideo about knuckles."];
 const conf = require("./config.json");
+process.on("unhandledRejection", (err, p) => {
+    console.log("Uncaught rejection:\n" + err.stack);
+    bot.users.get("123601647258697730").sendMessage("Uncaught rejection:\n```\n" + err.stack + "\n.. on .. "+ p +"\n```");
+});
 bot.on('ready', () => {
     logger("INFO", `Client ready; logged in as ${bot.user.username}#${bot.user.discriminator} (${bot.user.id})`, undefined, undefined);
     bot.users.get("123601647258697730").sendMessage(emoji.get(":white_check_mark:") + "Knucklesbot loaded.");
 });
 bot.on('message', msg => {
+    if(msg.guild && (!msg.channel.permissionsFor(bot.user.id).hasPermission("SEND_MESSAGES"))) return;
     if (msg.author.bot)
         return;
     if (msg.content.toUpperCase().includes("KNUCKLES") || msg.isMentioned(bot.user)) {
@@ -99,7 +104,7 @@ bot.on('message', msg => {
                 let msg_array = messages.array();
                 msg_array = msg_array.filter(m => m.author.id === bot.user.id)
                 msg_array.length = messagecount;
-                msg_array.map(m => m.delete().catch(console.error));
+                msg_array.map(m => m.delete());
                 logger("INFO", "pruned " + messagecount + " messages", msg.channel, msg);
             });
         } else if (params[0] === "leave" && msg.author.id === '123601647258697730') {
@@ -176,7 +181,7 @@ bot.on('message', msg => {
             logger("INFO", 'ignorelist updated, ' + ignorelist, msg.channel, msg);
         } else if (params[0] === "gallow" && msg.author.id === '123601647258697730') {
             var ment = msg.mentions.users.first();
-            msg.reply(`you got lucky,  ${ment.username}`).catch(errorHandler);
+            msg.reply(`you got lucky,  ${ment.username}`)
             for (var i = ignorelist.length - 1; i >= 0; i--) {
                 if (ignorelist[i] === ment.id) {
                     ignorelist.splice(i, 1);
@@ -196,7 +201,7 @@ bot.on('message', msg => {
             logger("INFO", 'channelignore updated for ' + bot.guilds.get(msg.guild.id).name + ', [' + channelignore[msg.guild.id] + '] (updated by ' + (bot.guilds.get(msg.guild.id).members.get(msg.author.id).nickname !== (undefined || null) ? bot.guilds.get(msg.guild.id).members.get(msg.author.id).nickname : msg.author.username) + ')', msg.channel, msg);
         } else if (params[0] === "removechannel" && (msg.member.hasPermission("MANAGE_MESSAGES") || msg.author.id === '123601647258697730')) {
             var channel = params[1] !== undefined ? bot.channels.get(params[1]) : bot.channels.get(channelignore[msg.guild.id][0]);
-            msg.reply(`removed ${channel.name} as an ignored channel`).catch(errorHandler);
+            msg.reply(`removed ${channel.name} as an ignored channel`)
             var tempCh = channelignore[msg.guild.id];
             if (tempCh === undefined) {
                 tempCh = [];
@@ -222,7 +227,7 @@ bot.on('message', msg => {
             logger("INFO", 'ignorelist updated for ' + bot.guilds.get(msg.guild.id).name + ', [' + serverignore[msg.guild.id] + '] (updated by ' + (bot.guilds.get(msg.guild.id).members.get(msg.author.id).nickname !== (undefined || null) ? bot.guilds.get(msg.guild.id).members.get(msg.author.id).nickname : msg.author.username) + ')', msg.channel, msg);
         } else if (params[0] === "allow" && (msg.member.hasPermission("MANAGE_MESSAGES") || msg.author.id === '123601647258697730')) {
             var ment = msg.mentions.users.first();
-            msg.reply(`you got lucky,  ${ment.username}`).catch(errorHandler);
+            msg.reply(`you got lucky,  ${ment.username}`)
             var tempIgnore = serverignore[msg.guild.id];
             if (tempIgnore === undefined) {
                 tempIgnore = [];
@@ -282,7 +287,7 @@ bot.on('message', msg => {
             logger("INFO", 'loglist updated for ' + bot.guilds.get(msg.guild.id).name + ', [' + bot.channels.get(loglist[msg.guild.id]).name + '] (updated by ' + (bot.guilds.get(msg.guild.id).members.get(msg.author.id).nickname !== (undefined || null) ? bot.guilds.get(msg.guild.id).members.get(msg.author.id).nickname : msg.author.username) + ')', msg.channel, msg);
         } else if ((params[0] === "logremove" || params[0] === "removelog") && msg.member.hasPermission("MANAGE_MESSAGES")) {
             var channel = params[1] !== undefined ? bot.channels.get(params[1]) : bot.channels.get(loglist[msg.guild.id][0]);
-            msg.reply(`removed ${channel.name} from the logger`).catch(errorHandler);
+            msg.reply(`removed ${channel.name} from the logger`)
             var tempLog = loglist[msg.guild.id];
             if (tempLog === undefined) {
                 tempLog = [];
@@ -315,7 +320,7 @@ bot.on('message', msg => {
                                             m.delete();
                                         }, 600000)
                                     }
-                                }).catch(errorHandler);
+                                })
                                 cooldownTime = cooldownSet;
                                 if (timeout.contains(msg.guild.id)) {
                                     logger("INFO", "sent picture, 10 minute timeout", msg.channel, msg);
@@ -361,7 +366,7 @@ bot.on('message', msg => {
                                     m.delete();
                                 }, 600000)
                             }
-                        }).catch(errorHandler);
+                        })
                         cooldownTimeV = cooldownSet;
                         logger("INFO", "sent video", msg.channel, msg);
                     }
@@ -392,7 +397,7 @@ bot.on('message', msg => {
                                 m.delete();
                             }, 600000)
                         }
-                    }).catch(errorHandler);
+                    })
                     logger("INFO", "wolfjob", msg.channel, msg);
                 }
             }
@@ -406,7 +411,7 @@ bot.on('message', msg => {
             if (!(channelignore[msg.guild.id].contains(msg.channel.id))) {
                 if (timeout.contains(msg.guild.id)) {
                     var file0 = path.resolve("knucklesbot/images/Training_for_fight_scene_by_manaita.png");
-                    msg.channel.sendFile(file0, "knuckles.jpg").catch(errorHandler);
+                    msg.channel.sendFile(file0, "knuckles.jpg")
                     logger("INFO", "shadow", msg.channel, msg);
                 }
             }
