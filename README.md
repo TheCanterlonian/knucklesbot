@@ -20,6 +20,6 @@ i'm honestly just joking about the "motherfucker" bit, you seem cool, i just wis
 
 
 todo:
-figure out what keeps the program from asking the user for a token before crashing
+figure out what keeps the program from asking the user for a token before crashing.
 this bug forces the user to manually copy their token into the token file and
 is very annoying to work with
