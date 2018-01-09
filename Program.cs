@@ -81,8 +81,6 @@ namespace knucklesBot
                 {
                     //deletes the token file
                     File.Delete(@"C:\CanterlotApplications\knucklesBot\token.txt");
-                    //deletes the log file
-                    File.Delete(@"C:\CanterlotApplications\knucklesBot\log.txt");
                     //exits the program
                     Environment.Exit(0);
                 }
