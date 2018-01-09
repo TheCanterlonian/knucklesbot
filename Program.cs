@@ -142,12 +142,6 @@ namespace knucklesBot
         //log handler method
         private Task Log(LogMessage logmsg)
         {
-            //checks if log file doesn't exist
-            if (!File.Exists(@"C:\CanterlotApplications\knucklesBot\log.txt"))
-            {
-                //creates the log file
-                File.Create(@"C:\CanterlotApplications\knucklesBot\log.txt");
-            }
             //writes log to console
             Console.WriteLine(logmsg.ToString());
             //tells the caller that this task was completed
