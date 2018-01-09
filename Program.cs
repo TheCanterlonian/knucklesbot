@@ -54,13 +54,14 @@ namespace knucklesBot
             {
                 //creates the token file
                 File.Create(@"C:\CanterlotApplications\knucklesBot\token.txt");
-                //opens a stream to the token file
-                StreamWriter swToken = new StreamWriter(@"C:\CanterlotApplications\knucklesBot\token.txt", false);
                 //retrieves a token from the user
                 Console.WriteLine("");
                 Console.WriteLine("knucklesBot needs a token:");
                 Console.WriteLine("");
                 Console.WriteLine("");
+                //opens a stream to the token file
+                StreamWriter swToken = new StreamWriter(@"C:\CanterlotApplications\knucklesBot\token.txt", false);
+                //puts the token in
                 botTokenVariableHolder = Console.ReadLine();
                 //check if the token is null
                 while (botTokenVariableHolder == (null) || botTokenVariableHolder == (""))
