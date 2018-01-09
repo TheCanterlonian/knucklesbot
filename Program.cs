@@ -31,7 +31,7 @@ namespace knucklesBot
         //variable to be assigned a token at runtime
         public static string botTokenVariable = ("notYet");
         //creates a holder to sterilize the token
-        public static string botTokenVariableHolder;
+        public static string botTokenVariableHolder = ("notYet");
         //main program starting method
         public static void Main(string[] args)
         {
