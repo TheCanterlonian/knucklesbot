@@ -135,6 +135,7 @@ namespace knucklesBot
             {
                 //pongs back where it was pinged
                 await message.Channel.SendFileAsync("images/knuck.png");
+                //TODO: make this an array of files instead of a single file
             }
         }
         //log handler method
