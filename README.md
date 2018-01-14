@@ -17,3 +17,7 @@ yes, i literally rewrote the entire thing from scratch because i couldn't read i
 
 i'm honestly just joking about the "motherfucker" bit, you seem cool, i just wish you'd documented your work
 
+
+currently working on:
+
+getting the bot to post more images
