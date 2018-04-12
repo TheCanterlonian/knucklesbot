@@ -137,6 +137,12 @@ namespace knucklesBot
                 await message.Channel.SendFileAsync("images/knuck.png");
                 //TODO: make this an array of files instead of a single file
             }
+            //just a little inside joke
+            if (meslower.Contains("nipples") == true)
+            {
+                //pongs back where it was pinged
+                await message.Channel.SendFileAsync("images/knuck.png")
+            }
         }
         //log handler method
         private Task Log(LogMessage logmsg)
