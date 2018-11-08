@@ -1,121 +1,157 @@
-﻿//knucklesbot rewritten by Nikole Powell
-/* Documentation -:
-Intent:
-basically knuckles bot but in C#
-End of Line */
-
-//this is the using list
-//you'll need the first one for EVERYTHING you ever make
+//knucklesBot by Nikole Tiffany Powell
 using System;
 //these came with the initialization
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-//usefull thingsies
 using System.Threading.Tasks;
-using System.Threading;
+//useful thingsies
 using System.IO;
+using System.Threading;
 using System.Reflection;
 using System.Data;
-//Discord stuffs ^w^
+//discord stuffs ^w^
 using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
 
-//KnucklesBot ReWritten
 namespace knucklesBot
 {
     //make this public so it can be called from outside
     public class Program
     {
+
         //variable to be assigned a token at runtime
-        public static string botTokenVariable = ("notYet");
-        //creates a holder to sterilize the token
-        public static string botTokenVariableHolder = ("notYet");
-        //main program starting method
+        public static string botToken = ("notYet");
+        //main program starting method is also public
         public static void Main(string[] args)
         {
-            //checks if the bot folder doesn't exist
+
+            //create the runonce directory if it doesn't already exist
             if (!Directory.Exists(@"C:\CanterlotApplications\knucklesBot\"))
             {
-                //checks if the app folder doesn't exist
+                Console.WriteLine("Initializing...");
+                //this will be used the entirety of the program's life
                 if (!Directory.Exists(@"C:\CanterlotApplications\"))
                 {
-                    //create the app folder
-                    DirectoryInfo workDir = Directory.CreateDirectory(@"C:\CanterlotApplications\");
-                    //make it hidden so the user doesn't destroy it
-                    workDir.Attributes = FileAttributes.Directory | FileAttributes.Hidden;
+                    //make the parent first
+                    DirectoryInfo diPMnew = Directory.CreateDirectory(@"C:\CanterlotApplications\");
+                    //make it hidden so the user doesn't stumble upon it
+                    diPMnew.Attributes = FileAttributes.Directory | FileAttributes.Hidden;
                 }
-                //creates the bot folder
+                //now make the child
                 Directory.CreateDirectory(@"C:\CanterlotApplications\knucklesBot\");
+                Console.WriteLine("Done!");
             }
-            //checks for the nonexistence of the token file
+            Console.WriteLine("Ready.");
+            //create some startup variables
+            bool answerIsNotValid = true;
+            char answerReply = 'a';
+            //ask permision to startup
+            while (answerIsNotValid)
+            {
+                Console.WriteLine(@"Start knucklesBot? Y/N:");
+                //take in the answer and assign it into a single-character variable
+                ConsoleKeyInfo replyKeyChar = Console.ReadKey();
+                Console.WriteLine("");
+                answerReply = replyKeyChar.KeyChar;
+                //check to see if the answer is any of the valid options
+                if (((answerReply == 'y') || (answerReply == 'Y')) || ((answerReply == 'n') || (answerReply == 'N')))
+                {
+                    answerIsNotValid = false;
+                }
+                //check if the user said to close the program
+                if ((answerReply == 'n') || (answerReply == 'N'))
+                {
+                    //close the program
+                    Environment.Exit(499);
+                }
+                if (answerIsNotValid)
+                {
+                    Console.WriteLine("");
+                    Console.WriteLine(@"Invalid option, please press 'Y' or 'N'.");
+                }
+            }
+            Console.WriteLine("Starting knucklesBot...");
+            //validity checking variable
+            bool tokenIsValid = false;
+            //check to see if the token file doesn't exist yet
             if (!File.Exists(@"C:\CanterlotApplications\knucklesBot\token.txt"))
             {
                 //creates the token file
                 File.Create(@"C:\CanterlotApplications\knucklesBot\token.txt");
-                //retrieves a token from the user
-                Console.WriteLine("");
-                Console.WriteLine("knucklesBot needs a token:");
-                Console.WriteLine("");
-                Console.WriteLine("");
-                //puts the token in the holder
-                botTokenVariableHolder = Console.ReadLine();
-                //check if the token is null
-                while (botTokenVariableHolder == (null) || botTokenVariableHolder == (""))
+                //check validity of token
+                while (tokenIsValid == false)
                 {
-                    //inform the user of their mistake
                     Console.WriteLine("");
-                    Console.WriteLine("The token was null.");
-                    //try to get the token again
+                    Console.WriteLine("knucklesBot needs a valid token:");
+                    //puts the token in the holder
+                    botToken = Console.ReadLine();
                     Console.WriteLine("");
-                    Console.WriteLine("Please enter the correct token:");
-                    Console.WriteLine("");
-                    Console.WriteLine("");
-                    botTokenVariableHolder = Console.ReadLine();
+                    //check that the token is not null
+                    if ((botToken != (null)) && (botToken != ("")))
+                    {
+                        // opens a stream to the token file
+                        StreamWriter swToken = new StreamWriter(@"C:\CanterlotApplications\knucklesBot\token.txt", false);
+                        //writes token to the token file
+                        swToken.WriteLine(botToken);
+                        //remember to always close the stream when you're done... ALWAYS!!!
+                        swToken.Close();
+                        //clears the screen so that the token can't be seen
+                        Console.Clear();
+                        //validate the token internally
+                        tokenIsValid = true;
+                    }
+                    //checks if the user wants to continue
+                    if (botToken == ("notYet"))
+                    {
+                        //deletes the token file
+                        File.Delete(@"C:\CanterlotApplications\knucklesBot\token.txt");
+                        //exits the program
+                        Environment.Exit(498);
+                    }
+                    Console.WriteLine("That was not a valid token.");
                 }
-                //checks if the user wants to continue
-                if (botTokenVariableHolder == ("notYet"))
-                {
-                    //deletes the token file
-                    File.Delete(@"C:\CanterlotApplications\knucklesBot\token.txt");
-                    //exits the program
-                    Environment.Exit(0);
-                }
-                //opens a stream to the token file
-                StreamWriter swToken = new StreamWriter(@"C:\CanterlotApplications\knucklesBot\token.txt", false);
-                //writes token to the token file
-                swToken.WriteLine(botTokenVariableHolder);
-                //remember to always close the stream when you're done... ALWAYS!!!
-                swToken.Close();
-                //clears the screen so that the token can't be seen
-                Console.Clear();
             }
-            //checks that the token file exists
-            if (File.Exists(@"C:\CanterlotApplications\knucklesBot\token.txt"))
+            //writes the content of the token file to the holder
+            botToken = File.ReadAllText(@"C:\CanterlotApplications\knucklesBot\token.txt");
+            Console.WriteLine("");
+            Console.WriteLine("Token has been loaded.");
+            Console.WriteLine("");
+            Console.WriteLine("Logging in...");
+            Console.WriteLine("");
+            //sets up to catch exceptions
+            try
             {
-                //writes the content of the token file to the holder
-                botTokenVariableHolder = File.ReadAllText(@"C:\CanterlotApplications\knucklesBot\token.txt");
-                //writes the token from the holder to the token variable
-                botTokenVariable = botTokenVariableHolder;
+                //run the async threading method which starts the bot
+                new Program().MainAsync().GetAwaiter().GetResult();
             }
-            //is obsolete but still looks good on the console
-            Console.WriteLine("");
-            Console.WriteLine("knucklesBot is running...");
-            Console.WriteLine("");
-            Console.WriteLine("");
-            //run the async threading method which starts the bot
-            new Program().MainAsync().GetAwaiter().GetResult();
+            //if an exception occurs
+            catch (Exception errorOutput)
+            {
+                //let the user know
+                Console.WriteLine("");
+                Console.WriteLine("An error occured: ");
+                Console.WriteLine("");
+                Console.WriteLine(errorOutput);
+                Console.WriteLine("");
+                Console.WriteLine("End of Line.");
+                Console.WriteLine("");
+                Console.WriteLine("Quitting program...");
+                Console.ReadKey();
+                Environment.Exit(497);
+            }
+
         }
         //async threading method
         public async Task MainAsync()
         {
-            //creates a new instance of DiscordSocketClient
+            // creates a new instance of DiscordSocketClient
             DiscordSocketClient _client = new DiscordSocketClient();
             //hooks log event to log handler method
             _client.Log += Log;
             //logs the bot in to discord
-            await _client.LoginAsync(TokenType.Bot, botTokenVariable);
+            await _client.LoginAsync(TokenType.Bot, botToken);
             //start connection-reconnection logic
             await _client.StartAsync();
             //activates message receiver when a message is received
@@ -127,15 +163,16 @@ namespace knucklesBot
         private async Task MessageReceived(SocketMessage message)
         {
             //activates if the bot is pinged
-            String mescon= message.Content;
+            String mescon = message.Content;
+            //makes the conent a string
+            mescon = mescon.ToString();
             //lowers the case of the input
-            String meslower = mescon.ToLower();
-            //checks if it is the correct input
-            if (meslower.Contains("knuckles") == true)
+            mescon = mescon.ToLower();
+            //checks if it is the correct input and pongs back where it was pinged
+            if((mescon.Contains("knuckles") == true) && (!(message.Author.IsBot)))
             {
-                //pongs back where it was pinged
-                await message.Channel.SendFileAsync("images/knuck.png");
-                //TODO: make this an array of files instead of a single file
+                await message.Channel.SendFileAsync(@"images\knuck.png");
+                //TODO: make into a array and elect a random image instead of a specific one 
             }
         }
         //log handler method
