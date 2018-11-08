@@ -174,6 +174,12 @@ namespace knucklesBot
                 await message.Channel.SendFileAsync(@"images\knuck.png");
                 //TODO: make into a array and elect a random image instead of a specific one 
             }
+            //just a little inside joke
+            if (meslower.Contains("nipples") == true)
+            {
+                //pongs back where it was pinged
+                await message.Channel.SendFileAsync("images/knuck.png")
+            }
         }
         //log handler method
         private Task Log(LogMessage logmsg)
